@@ -1,8 +1,9 @@
 package entity;
 
 import creational.CoffeePrototype;
+import structural.composite.OrderComponent;
 
-public class Coffee implements CoffeePrototype
+public class Coffee implements CoffeePrototype, OrderComponent
 {
     CoffeeType type;
     int sugar = 0;
@@ -40,5 +41,10 @@ public class Coffee implements CoffeePrototype
         clone.setSyrup(syrup);
         clone.setCupType(cupType);
         return clone;
+    }
+
+    @Override
+    public void showDetails() {
+
     }
 }

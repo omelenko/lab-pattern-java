@@ -2,7 +2,8 @@ package creational;
 
 import entity.*;
 
-public class CoffeeAbstractFactory {
+public class CoffeeAbstractFactory
+{
     public CoffeeFactory getCoffeeFactory(CoffeeType type)
     {
         switch(type)
@@ -16,12 +17,13 @@ public class CoffeeAbstractFactory {
         }
     }
 
-    abstract class CoffeeFactory
+    public abstract class CoffeeFactory
     {
         public abstract Coffee getCoffee(int sugar, String syrup);
     }
 
-    public class LatteFactory extends CoffeeFactory {
+    public class LatteFactory extends CoffeeFactory
+    {
         @Override
         public Coffee getCoffee(int sugar, String syrup) {
             Latte myCoffee = new Latte();
@@ -31,7 +33,8 @@ public class CoffeeAbstractFactory {
         }
     }
 
-    public class EspressoFactory extends CoffeeFactory {
+    public class EspressoFactory extends CoffeeFactory
+    {
         @Override
         public Coffee getCoffee(int sugar, String syrup) {
             Espresso myCoffee = new Espresso();
