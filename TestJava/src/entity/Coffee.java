@@ -1,5 +1,7 @@
 package entity;
 
+import behavioral.memento.CoffeeMemento;
+import behavioral.visitor.CoffeeVisitor;
 import creational.CoffeePrototype;
 import structural.composite.OrderComponent;
 
@@ -25,11 +27,11 @@ public class Coffee implements CoffeePrototype, OrderComponent
     public void setSyrup(String syrup) {this.syrup = syrup;}
     public void setType(CoffeeType type) {this.type = type;}
 
-//    public String getType() {return type;}
-//    public int getSugar() {return sugar;}
-//    public Boolean getMilk() {return milk;}
-//    public String getSyrup() {return syrup;}
-//    public mainClasses.CupType getCupType() {return cupType;}
+    public CoffeeType getType() {return type;}
+    public int getSugar() {return sugar;}
+    public Boolean getMilk() {return milk;}
+    public String getSyrup() {return syrup;}
+    public CupType getCupType() {return cupType;}
 
 
     @Override
@@ -45,6 +47,20 @@ public class Coffee implements CoffeePrototype, OrderComponent
 
     @Override
     public void showDetails() {
+        info();
+    }
 
+    public void accept(CoffeeVisitor visitor) {
+        visitor.visit(this);
+    }
+
+    public CoffeeMemento saveToMemento() {
+        return new CoffeeMemento(this.syrup);
+    }
+
+    public void restoreFromMemento(CoffeeMemento memento) {
+        if (memento != null) {
+            this.syrup = memento.getState();
+        }
     }
 }

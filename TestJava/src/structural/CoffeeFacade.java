@@ -1,5 +1,16 @@
 package structural;
 
+import behavioral.chainOfResponsibility.CoffeeCheck;
+import behavioral.command.Command;
+import behavioral.interpretator.CoffeeExpression;
+import behavioral.iterator.MenuIterator;
+import behavioral.mediator.CoffeeMediator;
+import behavioral.memento.CoffeeCaretaker;
+import behavioral.observer.CoffeeOrderSubject;
+import behavioral.observer.Observer;
+import behavioral.stratergy.PaymentStrategy;
+import behavioral.templateMethod.CoffeeTemplate;
+import behavioral.visitor.CoffeeMixer;
 import creational.*;
 import entity.*;
 import structural.adapter.CoffeeAdapter;
@@ -10,6 +21,7 @@ import structural.bridge.CoffeeOrder;
 import structural.bridge.PremiumOrder;
 import structural.composite.ComboOrder;
 import structural.decorator.CinnamonDecorator;
+import structural.flyweight.CoffeeTypeFactory;
 import structural.proxy.CoffeeMachineProxy;
 import structural.proxy.CoffeeService;
 
@@ -109,5 +121,78 @@ public class CoffeeFacade
         BrewingProcess manual = new AutoBrew();
         CoffeeOrder order = new PremiumOrder(manual);
         order.make();
+    }
+    public void makeCoffeeWithFlyweight(String type) {
+        CoffeeType sharedDescription = CoffeeTypeFactory.getType(type);
+        Coffee myCoffee = coffeeFactory.getCoffee(sharedDescription, 0, "None");
+
+        prepareOrder(myCoffee, "Flyweight");
+        System.out.println("Shared Knowledge: " + sharedDescription);
+    }
+
+    // 3
+    public void processPayment(int amount, PaymentStrategy strategy) {
+        System.out.println("--- Facade: processing payment using Strategy ---");
+        strategy.pay(amount);
+    }
+    public void makeCoffeeWithNotification(CoffeeType type, Observer customer) {
+        CoffeeOrderSubject subject = new CoffeeOrderSubject();
+        subject.addObserver(customer);
+
+        Coffee coffee = coffeeFactory.getCoffee(type, 1, "None");
+        prepareOrder(coffee, "Observer");
+
+        subject.notifyObservers("Your " + type + " is ready for pickup!");
+    }
+    public void executeCoffeeCommand(Command command) {
+        System.out.println("--- Facade: executing request using Command ---");
+        command.execute();
+    }
+    public void brewWithTemplate(CoffeeTemplate template) {
+        System.out.println("--- Facade: brewing using Template Method ---");
+        template.makeCoffee();
+    }
+    public void printMenu(MenuIterator iterator) {
+        System.out.println("--- Facade: iterating through menu using Iterator ---");
+        while (iterator.hasNext()) {
+            System.out.println("Menu item: " + iterator.next());
+        }
+    }
+    public void sendStaffMessage(String msg, Object staffMember, CoffeeMediator mediator) {
+        System.out.println("--- Facade: relaying message via Mediator ---");
+        mediator.sendMessage(msg, staffMember);
+    }
+    public void saveAndRestoreCoffee(Coffee coffee) {
+        System.out.println("--- Facade: saving coffee state using Memento ---");
+        CoffeeCaretaker caretaker = new CoffeeCaretaker();
+
+        caretaker.save(coffee.saveToMemento());
+
+        System.out.println("Current state: " + coffee.getSyrup());
+        coffee.setSyrup("Changed by mistake");
+        System.out.println("Accidental change: " + coffee.getSyrup());
+
+        coffee.restoreFromMemento(caretaker.restore());
+        System.out.println("Restored state: " + coffee.getSyrup());
+    }
+    public void checkResources(CoffeeCheck initialCheck) {
+        System.out.println("--- Facade: checking resources using Chain of Responsibility ---");
+        initialCheck.check();
+    }
+    public void makeMixedCoffee(Coffee... coffees) {
+        System.out.println("--- Facade: mixing coffees using Visitor ---");
+        CoffeeMixer mixer = new CoffeeMixer();
+
+        for (Coffee c : coffees) {
+            c.accept(mixer);
+        }
+
+        Coffee finalMix = mixer.getFinalMix();
+        prepareOrder(finalMix, "Visitor (Mixer)");
+    }
+    public void interpretCommand(String expression) {
+        System.out.println("--- Facade: interpreting command using Interpreter ---");
+        CoffeeExpression interpreter = new CoffeeExpression();
+        interpreter.interpret(expression);
     }
 }
