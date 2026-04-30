@@ -13,6 +13,7 @@ import behavioral.stratergy.CashPayment;
 import behavioral.templateMethod.LatteTemplate;
 import entity.Coffee;
 import entity.CoffeeType;
+import functional.structural.PaymentStrategies;
 import structural.CoffeeFacade;
 
 import java.util.Arrays;
@@ -115,6 +116,12 @@ public class Main {
         System.out.println("11. Всі з великої літери: " + areAllCapitalized(strings));
         System.out.println("12. Друге за величиною число: " + findSecondLargest(numbers));
         System.out.println("13. Найбільше парне число: " + findMaxEven(numbers));
+
+        // 5
+        facade.makeCoffeeWithFunctionalFactory(CoffeeType.latte, 2, "Chocolate");
+        facade.processPaymentFunctional(100, PaymentStrategies.CARD);
+        facade.processPaymentFunctional(50, amount -> System.out.println("Paid " + amount + " UAH via Crypto."));
+        facade.makeCoffeeWithMaintenance(CoffeeType.latte,  facade::makeSuperDecoratedCoffee);
     }
     // 1.
     public static List<Integer> filterOdd(List<Integer> list) {

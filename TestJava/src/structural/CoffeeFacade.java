@@ -13,6 +13,9 @@ import behavioral.templateMethod.CoffeeTemplate;
 import behavioral.visitor.CoffeeMixer;
 import creational.*;
 import entity.*;
+import functional.CoffeeDecorators;
+import functional.execute_around.CoffeeAction;
+import functional.execute_around.CoffeeProcessManager;
 import structural.adapter.CoffeeAdapter;
 import structural.adapter.OldOrderSystem;
 import structural.bridge.AutoBrew;
@@ -24,6 +27,9 @@ import structural.decorator.CinnamonDecorator;
 import structural.flyweight.CoffeeTypeFactory;
 import structural.proxy.CoffeeMachineProxy;
 import structural.proxy.CoffeeService;
+
+import java.util.function.Function;
+import java.util.function.UnaryOperator;
 
 public class CoffeeFacade
 {
@@ -194,5 +200,34 @@ public class CoffeeFacade
         System.out.println("--- Facade: interpreting command using Interpreter ---");
         CoffeeExpression interpreter = new CoffeeExpression();
         interpreter.interpret(expression);
+    }
+
+    // 5
+    public void makeCoffeeWithFunctionalFactory(CoffeeType type, int sugar, String syrup) {
+        System.out.println("--- Facade: preparing order using Functional Factory ---");
+
+        var factory = coffeeAbstractFactory.getCoffeeFactory(type);
+
+        Coffee coffee = factory.getCoffee(sugar, syrup);
+
+        prepareOrder(coffee, "Functional Factory");
+    }
+    public void processPaymentFunctional(int amount, functional.structural.PaymentStrategy strategy) {
+        System.out.println("--- Facade: processing payment using Functional Strategy ---");
+        strategy.pay(amount);
+    }
+    public void makeSuperDecoratedCoffee(CoffeeType type) {
+        Coffee coffee = coffeeFactory.getCoffee(type, 1, "None");
+
+        Function<Coffee, Coffee> fullUpgrade =
+                CoffeeDecorators.WITH_CINNAMON
+                               .andThen(CoffeeDecorators.WITH_MARSHMALLOW);
+
+        coffee = fullUpgrade.apply(coffee);
+
+        prepareOrder(coffee, "Functional Decorator (Chain)");
+    }
+    public void makeCoffeeWithMaintenance(CoffeeType type, CoffeeAction ca) {
+        CoffeeProcessManager.process(type, ca);
     }
 }
